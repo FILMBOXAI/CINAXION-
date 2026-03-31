@@ -295,7 +295,7 @@ const grid = document.getElementById("grid");
 
 let isSearching = false;
 
-// 👉 Detectar escritura
+// 👉 Detectar escritura (SIN tocar tmdb.js)
 input.addEventListener("input", () => {
   const q = input.value.trim();
 
@@ -311,28 +311,28 @@ input.addEventListener("input", () => {
     input.blur();
   }
 
-  // 🔥 AQUÍ VA TU LÓGICA DE BÚSQUEDA (tmdb.js)
-  // Ejemplo:
-  if (typeof buscarPeliculas === "function") {
-    buscarPeliculas(q);
-  }
+  // ❌ IMPORTANTE:
+  // NO pongas buscarPeliculas ni nada aquí
+  // tmdb.js ya maneja la búsqueda
 });
+
 
 // 👉 Botón atrás (IGUAL QUE FILMBOX)
 window.addEventListener("popstate", () => {
   if (isSearching || input.value !== "") {
     input.value = "";
 
-    // 🔥 Volver al inicio
+    // 🔥 Volver al inicio (tu función real)
     if (typeof loadHome === "function") {
       loadHome();
     }
 
     isSearching = false;
 
-    // 🔥 ESTO ES LO IMPORTANTE
+    // 🔥 Quita cursor + cierra teclado
     input.blur();
 
+    // 🔥 Evita que se salga de la página
     history.pushState({ search: false }, "");
   }
 });
