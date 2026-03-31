@@ -294,7 +294,7 @@ const input = document.getElementById("search");
 
 let isSearching = false;
 
-// 👉 Detectar escritura (BUSCAR DE VERDAD)
+// 👉 Detectar escritura
 input.addEventListener("input", () => {
   const q = input.value.toLowerCase().trim();
 
@@ -304,42 +304,43 @@ input.addEventListener("input", () => {
     isSearching = true;
   }
 
-  // 🔥 SI HAY TEXTO → BUSCAR
+  // 🔍 BUSCAR
   if (q.length > 0) {
     if (typeof searchMovies === "function") {
-      searchMovies(q); // 👈 ESTA ES LA CLAVE
+      searchMovies(q);
     }
   }
 
   // 🔥 SI BORRA TODO → VOLVER AL INICIO
   if (q.length === 0) {
-    isSearching = false;
-
-    if (typeof loadHome === "function") {
-      loadHome();
-    }
-
-    input.blur();
+    volverInicio();
   }
 });
 
 
-// 👉 BOTÓN ATRÁS (IGUAL QUE FILMBOX)
+// 🔥 FUNCIÓN PARA VOLVER AL INICIO
+function volverInicio() {
+  isSearching = false;
+
+  if (typeof loadHome === "function") {
+    loadHome();
+  }
+
+  input.value = "";
+  input.blur();
+}
+
+
+// 👉 BOTÓN ATRÁS
 window.addEventListener("popstate", () => {
   if (isSearching || input.value !== "") {
-    input.value = "";
+    volverInicio();
 
-    if (typeof loadHome === "function") {
-      loadHome();
-    }
-
-    isSearching = false;
-
-    input.blur();
-
-    // Evita que se salga
-    history.pushState({ search: false }, "");
+    setTimeout(() => {
+      history.pushState({ search: false }, "");
+    }, 50);
   }
+});
 });
 </script>
 
