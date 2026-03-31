@@ -288,6 +288,29 @@
       window.scrollTo({ top: parseInt(savedPos), behavior: 'instant' });
     }
   });
+
+  const input = document.getElementById("search");
+
+// Función para limpiar + cerrar teclado
+function limpiarBuscador() {
+  input.value = "";
+
+  // ✅ Quitar focus (cursor)
+  input.blur();
+
+  // ✅ Extra para móviles (Android sobre todo)
+  document.activeElement.blur();
+
+  // ✅ Forzar que no vuelva el teclado
+  input.setAttribute("readonly", true);
+
+  setTimeout(() => {
+    input.removeAttribute("readonly");
+  }, 100);
+} 
+  window.addEventListener("popstate", () => {
+  limpiarBuscador();
+});
 </script>
 
 </body>
