@@ -294,57 +294,62 @@ const input = document.getElementById("search");
 
 let isSearching = false;
 
-// 👉 Detectar cuando escribe (NO rompe tmdb.js)
+// 👉 Detectar escritura
 input.addEventListener("input", () => {
   const q = input.value.trim();
 
-  // Activar historial cuando empieza a buscar
+  // Activar historial
   if (q.length > 0 && !isSearching) {
     history.pushState({ search: true }, "");
     isSearching = true;
   }
 
-  // Si borra todo → volver al inicio (tmdb.js ya lo hace)
-  if (q.length === 0) {
-    isSearching = false;
+  // 🔥 SI HAY TEXTO → normal (tmdb.js ya busca)
+  if (q.length > 0) return;
 
-    // 🔥 Cerrar teclado al borrar
-    setTimeout(() => {
-      input.blur();
-    }, 50);
+  // 🔥 SI BORRA TODO → FORZAR HOME
+  isSearching = false;
+
+  if (typeof loadHome === "function") {
+    loadHome(true); // 👈 CLAVE: reset real
   }
+
+  // 🔥 Cerrar teclado
+  setTimeout(() => {
+    input.blur();
+  }, 50);
 });
 
 
-// 👉 BOTÓN ATRÁS (ESTILO FILMBOX PRO)
+// 👉 BOTÓN ATRÁS
 window.addEventListener("popstate", () => {
   if (isSearching || input.value !== "") {
 
-    // 🔥 Limpiar buscador
+    // 🔥 Limpiar input
     input.value = "";
 
-    // 🔥 Disparar input → tmdb.js vuelve al home
-    input.dispatchEvent(new Event("input"));
+    // 🔥 FORZAR HOME REAL
+    if (typeof loadHome === "function") {
+      loadHome(true); // 👈 CLAVE
+    }
 
     isSearching = false;
 
-    // 🔥 Cerrar teclado SIEMPRE (fix Android)
+    // 🔥 Cerrar teclado (fix Android)
     input.blur();
 
     setTimeout(() => {
       document.activeElement.blur();
     }, 50);
 
-    // 🔥 Hack para evitar que reaparezca
     input.setAttribute("readonly", true);
-
     setTimeout(() => {
       input.removeAttribute("readonly");
     }, 200);
 
-    // 🔥 Evitar salir de la página
     history.pushState({ search: false }, "");
   }
+});
 });
 </script>
 
