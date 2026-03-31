@@ -291,43 +291,49 @@
 
   // 🔍 Referencia al input
 const input = document.getElementById("search");
+const grid = document.getElementById("grid");
 
-// 🔥 Estado de búsqueda
-let busquedaActiva = false;
+let isSearching = false;
 
-// 👉 Cuando el usuario toca el buscador
-input.addEventListener("focus", () => {
-  if (!busquedaActiva) {
+// 👉 Detectar escritura
+input.addEventListener("input", () => {
+  const q = input.value.trim();
+
+  // Activar historial cuando empieza a escribir
+  if (q.length > 0 && !isSearching) {
     history.pushState({ search: true }, "");
-    busquedaActiva = true;
+    isSearching = true;
+  }
+
+  // Si borra todo
+  if (q.length === 0) {
+    isSearching = false;
+    input.blur();
+  }
+
+  // 🔥 AQUÍ VA TU LÓGICA DE BÚSQUEDA (tmdb.js)
+  // Ejemplo:
+  if (typeof buscarPeliculas === "function") {
+    buscarPeliculas(q);
   }
 });
 
-// 🧹 Función para limpiar + cerrar teclado
-function limpiarBuscador() {
-  input.value = "";
-
-  // Quitar cursor
-  input.blur();
-
-  // Refuerzo para móviles
-  setTimeout(() => {
-    document.activeElement.blur();
-  }, 50);
-
-  // Hack para cerrar teclado en Android
-  input.setAttribute("readonly", true);
-
-  setTimeout(() => {
-    input.removeAttribute("readonly");
-  }, 150);
-}
-
-// 🔙 Detectar botón atrás
+// 👉 Botón atrás (IGUAL QUE FILMBOX)
 window.addEventListener("popstate", () => {
-  if (busquedaActiva) {
-    limpiarBuscador();
-    busquedaActiva = false;
+  if (isSearching || input.value !== "") {
+    input.value = "";
+
+    // 🔥 Volver al inicio
+    if (typeof loadHome === "function") {
+      loadHome();
+    }
+
+    isSearching = false;
+
+    // 🔥 ESTO ES LO IMPORTANTE
+    input.blur();
+
+    history.pushState({ search: false }, "");
   }
 });
 </script>
