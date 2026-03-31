@@ -304,38 +304,33 @@ input.addEventListener("input", () => {
     isSearching = true;
   }
 
-  // 🔥 SI HAY TEXTO → normal (tmdb.js ya busca)
-  if (q.length > 0) return;
+  // 🔥 SI BORRA TODO → DISPARAR EVENTO REAL
+  if (q.length === 0) {
+    isSearching = false;
 
-  // 🔥 SI BORRA TODO → FORZAR HOME
-  isSearching = false;
+    // 🔥 Esto activa tmdb.js correctamente
+    input.dispatchEvent(new Event("input"));
 
-  if (typeof loadHome === "function") {
-    loadHome(true); // 👈 CLAVE: reset real
+    // 🔥 cerrar teclado
+    setTimeout(() => {
+      input.blur();
+    }, 50);
   }
-
-  // 🔥 Cerrar teclado
-  setTimeout(() => {
-    input.blur();
-  }, 50);
 });
 
 
-// 👉 BOTÓN ATRÁS
+// 👉 BOTÓN ATRÁS (PERFECTO)
 window.addEventListener("popstate", () => {
   if (isSearching || input.value !== "") {
 
-    // 🔥 Limpiar input
     input.value = "";
 
-    // 🔥 FORZAR HOME REAL
-    if (typeof loadHome === "function") {
-      loadHome(true); // 👈 CLAVE
-    }
+    // 🔥 DISPARAR tmdb.js (clave)
+    input.dispatchEvent(new Event("input"));
 
     isSearching = false;
 
-    // 🔥 Cerrar teclado (fix Android)
+    // 🔥 cerrar teclado BIEN
     input.blur();
 
     setTimeout(() => {
@@ -349,7 +344,6 @@ window.addEventListener("popstate", () => {
 
     history.pushState({ search: false }, "");
   }
-});
 });
 </script>
 
