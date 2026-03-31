@@ -7,19 +7,16 @@
 
   <title>CINAXION - Nueva Era</title>
   
-  <!-- Fuente moderna -->
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&display=swap" rel="stylesheet">
 
   <style>
-    /* VARIABLES DE DISEÑO COMPLETAMENTE NUEVAS */
     :root {
       --bg-color: #0f1115;
       --panel-color: #161920;
       --accent: #3b82f6;
       --text-primary: #f8fafc;
       --text-secondary: #94a3b8;
-      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-      --border: 1px solid rgba(255,255,255,0.05);
+      --border: 1px solid rgba(255,255,255,0.08);
     }
 
     * {
@@ -33,20 +30,20 @@
       background-color: var(--bg-color);
       color: var(--text-primary);
       overflow-x: hidden;
-      line-height: 1.5;
+      padding-top: 110px; /* Espacio para el panel */
     }
 
-    /* --- NUEVO CARGADOR (LOADER) --- */
+    /* --- LOADER --- */
     #loader {
       position: fixed;
       inset: 0;
       background: var(--bg-color);
-      z-index: 9999;
+      z-index: 10000;
       display: flex;
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.6s ease;
     }
 
     .loader-bar {
@@ -64,7 +61,6 @@
       background: var(--accent);
       position: absolute;
       animation: loading-move 1.5s infinite ease-in-out;
-      box-shadow: 0 0 15px var(--accent);
     }
 
     @keyframes loading-move {
@@ -72,34 +68,38 @@
       100% { left: 100%; }
     }
 
-    /* --- ESTRUCTURA DE LA APP --- */
-    .app-wrapper {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 20px;
+    /* --- HEADER: EL TRUCO PARA QUE NO SE VEAN LAS CARDS --- */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100px; /* Altura que cubre el área superior */
+      background-color: var(--bg-color); /* Color de fondo sólido igual al body */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9000;
     }
 
-    /* HEADER REDISEÑADO */
-    header {
+    /* EL PANEL FLOTANTE (ESTILO DE TU IMAGEN) */
+    .floating-panel {
       background: var(--panel-color);
-      padding: 15px 25px;
-      border-radius: 24px;
+      width: 92%;
+      max-width: 1200px;
+      padding: 12px 25px;
+      border-radius: 24px; /* Forma de pastilla */
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 30px;
-      margin-top: 10px;
       border: var(--border);
-      box-shadow: var(--shadow);
-      position: sticky;
-      top: 15px;
-      z-index: 1000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
-    header .logo img {
+    .logo img {
       height: 32px;
       width: auto;
-      object-fit: contain;
+      display: block;
     }
 
     .search-box {
@@ -107,34 +107,32 @@
       border-radius: 16px;
       display: flex;
       align-items: center;
-      padding: 2px 15px;
+      padding: 0 15px;
       width: 60%;
-      max-width: 400px;
+      max-width: 350px;
       border: var(--border);
-      transition: transform 0.3s ease;
-    }
-
-    .search-box:focus-within {
-      transform: scale(1.02);
-      border-color: var(--accent);
     }
 
     #search {
       background: transparent;
       border: none;
       color: white;
-      padding: 10px;
+      padding: 10px 0;
       width: 100%;
       font-size: 14px;
       outline: none;
     }
 
-    /* MARQUEE DISCRETO Y ELEGANTE */
+    /* --- CUERPO --- */
+    .app-wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
     .marquee {
-      background: transparent;
       color: var(--text-secondary);
       font-size: 12px;
-      font-weight: 500;
       padding: 10px 0;
       overflow: hidden;
       margin-bottom: 20px;
@@ -154,27 +152,25 @@
       100% { transform: translateX(-100%); }
     }
 
-    /* --- GRID DE CONTENIDO (MANTENIENDO TU LÓGICA) --- */
+    /* --- GRID --- */
     .movies {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
       gap: 20px;
+      padding-bottom: 50px;
     }
 
-    /* CARDS COMPLETAMENTE NUEVAS */
     .card {
       background: var(--panel-color);
       border-radius: 20px;
       overflow: hidden;
-      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
       position: relative;
       border: var(--border);
-      cursor: pointer;
     }
 
     .card:hover {
       transform: translateY(-10px);
-      box-shadow: 0 20px 30px rgba(0,0,0,0.5);
       border-color: var(--accent);
     }
 
@@ -182,10 +178,9 @@
       width: 100%;
       aspect-ratio: 2/3;
       object-fit: cover;
-      transition: filter 0.3s ease;
+      display: block;
     }
 
-    /* Overlay de información en la card */
     .card-info {
       padding: 12px;
       background: linear-gradient(to top, var(--panel-color) 30%, transparent);
@@ -201,63 +196,59 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: var(--text-primary);
     }
 
     /* FOOTER */
     .tmdb-footer {
-      margin-top: 60px;
+      margin-top: 40px;
       padding: 40px 20px;
       text-align: center;
       background: var(--panel-color);
-      border-radius: 30px 30px 0 0;
       color: var(--text-secondary);
       font-size: 11px;
     }
 
     /* RESPONSIVE */
     @media (max-width: 600px) {
-      .movies {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-      }
+      body { padding-top: 90px; }
+      header { height: 90px; }
+      .floating-panel { padding: 10px 15px; border-radius: 20px; }
+      .movies { grid-template-columns: repeat(3, 1fr); gap: 10px; }
       .card h4 { font-size: 10px; }
-      header { padding: 12px 15px; border-radius: 18px; }
-      .search-box { width: 50%; }
+      .search-box { width: 55%; }
     }
   </style>
 </head>
 <body>
 
-<!-- Nuevo Loader Minimalista -->
 <div id="loader">
   <div style="margin-bottom: 20px;">
-    <img src="https://i.postimg.cc/4dt12H7s/Picsart_26_03_04_18_18_13_389.png" style="height: 40px;" alt="">
+    <img src="https://i.postimg.cc/4dt12H7s/Picsart_26_03_04_18_18_13_389.png" style="height: 40px;">
   </div>
   <div class="loader-bar">
     <div class="loader-progress"></div>
   </div>
 </div>
 
-<div class="app-wrapper">
-  
-  <header>
+<header>
+  <!-- Este es el panel estilo "Isla" de tu imagen -->
+  <div class="floating-panel">
     <div class="logo">
-      <img src="https://i.postimg.cc/4dt12H7s/Picsart_26_03_04_18_18_13_389.png" alt="Logo">
+      <img src="https://i.postimg.cc/4dt12H7s/Picsart_26_03_04_18_18_13_389.png" alt="CINAXION">
     </div>
     
     <div class="search-box">
       <input type="text" id="search" placeholder="Buscar título...">
     </div>
-  </header>
+  </div>
+</header>
 
+<div class="app-wrapper">
   <div class="marquee">
     <span>Cargando lo mejor del séptimo arte • Actualizaciones diarias • Sin límites • Disfruta en CINAXION</span>
   </div>
 
-  <!-- CONTENEDOR PRINCIPAL - Mantiene el ID para tmdb.js -->
   <section class="movies" id="grid"></section>
-
 </div>
 
 <footer class="tmdb-footer">
@@ -265,11 +256,9 @@
   <p>Cinaxion Engine 2.0 &copy; 2026</p>
 </footer>
 
-<!-- ✅ Conexión con tu lógica existente -->
 <script src="tmdb.js"></script>
 
 <script>
-  // Control del Loader (sessionStorage)
   window.addEventListener("load", () => {
     const loader = document.getElementById("loader");
     if (sessionStorage.getItem("loaderShown")) {
@@ -283,14 +272,12 @@
     }
   });
 
-  // Ejecución de carga (loadHome debe existir en tu tmdb.js)
   document.addEventListener("DOMContentLoaded", () => {
     if (typeof loadHome === "function") {
       loadHome();
     }
   });
 
-  // Scroll Persistencia
   window.addEventListener("beforeunload", () => {
     localStorage.setItem("scrollPos", window.scrollY);
   });
@@ -298,10 +285,7 @@
   document.addEventListener("DOMContentLoaded", () => {
     const savedPos = localStorage.getItem("scrollPos");
     if (savedPos) {
-      window.scrollTo({
-        top: parseInt(savedPos),
-        behavior: 'instant'
-      });
+      window.scrollTo({ top: parseInt(savedPos), behavior: 'instant' });
     }
   });
 </script>
