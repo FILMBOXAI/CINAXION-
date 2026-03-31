@@ -294,53 +294,39 @@ const input = document.getElementById("search");
 
 let isSearching = false;
 
-// 👉 Detectar escritura
+// 👉 Detectar cuando empieza a escribir (SOLO historial)
 input.addEventListener("input", () => {
-  const q = input.value.toLowerCase().trim();
+  const q = input.value.trim();
 
-  // Activar historial
   if (q.length > 0 && !isSearching) {
     history.pushState({ search: true }, "");
     isSearching = true;
   }
 
-  // 🔍 BUSCAR
-  if (q.length > 0) {
-    if (typeof searchMovies === "function") {
-      searchMovies(q);
-    }
-  }
-
-  // 🔥 SI BORRA TODO → VOLVER AL INICIO
   if (q.length === 0) {
-    volverInicio();
+    isSearching = false;
   }
 });
 
 
-// 🔥 FUNCIÓN PARA VOLVER AL INICIO
-function volverInicio() {
-  isSearching = false;
-
-  if (typeof loadHome === "function") {
-    loadHome();
-  }
-
-  input.value = "";
-  input.blur();
-}
-
-
-// 👉 BOTÓN ATRÁS
+// 👉 BOTÓN ATRÁS (ESTILO FILMBOX)
 window.addEventListener("popstate", () => {
   if (isSearching || input.value !== "") {
-    volverInicio();
 
-    setTimeout(() => {
-      history.pushState({ search: false }, "");
-    }, 50);
+    // 🔥 Limpiar input
+    input.value = "";
+
+    // 🔥 Disparar el input para que tmdb.js recargue HOME
+    input.dispatchEvent(new Event("input"));
+
+    isSearching = false;
+
+    // 🔥 Cerrar teclado
+    input.blur();
+
+    // 🔥 Evitar salir de la página
+    history.pushState({ search: false }, "");
   }
-});
 });
 </script>
 
