@@ -291,48 +291,53 @@
 
   // 🔍 Referencia al input
 const input = document.getElementById("search");
-const grid = document.getElementById("grid");
 
 let isSearching = false;
 
-// 👉 Detectar escritura (SIN tocar tmdb.js)
+// 👉 Detectar escritura (BUSCAR DE VERDAD)
 input.addEventListener("input", () => {
-  const q = input.value.trim();
+  const q = input.value.toLowerCase().trim();
 
-  // Activar historial cuando empieza a escribir
+  // Activar historial
   if (q.length > 0 && !isSearching) {
     history.pushState({ search: true }, "");
     isSearching = true;
   }
 
-  // Si borra todo
-  if (q.length === 0) {
-    isSearching = false;
-    input.blur();
+  // 🔥 SI HAY TEXTO → BUSCAR
+  if (q.length > 0) {
+    if (typeof searchMovies === "function") {
+      searchMovies(q); // 👈 ESTA ES LA CLAVE
+    }
   }
 
-  // ❌ IMPORTANTE:
-  // NO pongas buscarPeliculas ni nada aquí
-  // tmdb.js ya maneja la búsqueda
+  // 🔥 SI BORRA TODO → VOLVER AL INICIO
+  if (q.length === 0) {
+    isSearching = false;
+
+    if (typeof loadHome === "function") {
+      loadHome();
+    }
+
+    input.blur();
+  }
 });
 
 
-// 👉 Botón atrás (IGUAL QUE FILMBOX)
+// 👉 BOTÓN ATRÁS (IGUAL QUE FILMBOX)
 window.addEventListener("popstate", () => {
   if (isSearching || input.value !== "") {
     input.value = "";
 
-    // 🔥 Volver al inicio (tu función real)
     if (typeof loadHome === "function") {
       loadHome();
     }
 
     isSearching = false;
 
-    // 🔥 Quita cursor + cierra teclado
     input.blur();
 
-    // 🔥 Evita que se salga de la página
+    // Evita que se salga
     history.pushState({ search: false }, "");
   }
 });
