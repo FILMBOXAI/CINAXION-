@@ -289,27 +289,46 @@
     }
   });
 
-  const input = document.getElementById("search");
+  // 🔍 Referencia al input
+const input = document.getElementById("search");
 
-// Función para limpiar + cerrar teclado
+// 🔥 Estado de búsqueda
+let busquedaActiva = false;
+
+// 👉 Cuando el usuario toca el buscador
+input.addEventListener("focus", () => {
+  if (!busquedaActiva) {
+    history.pushState({ search: true }, "");
+    busquedaActiva = true;
+  }
+});
+
+// 🧹 Función para limpiar + cerrar teclado
 function limpiarBuscador() {
   input.value = "";
 
-  // ✅ Quitar focus (cursor)
+  // Quitar cursor
   input.blur();
 
-  // ✅ Extra para móviles (Android sobre todo)
-  document.activeElement.blur();
+  // Refuerzo para móviles
+  setTimeout(() => {
+    document.activeElement.blur();
+  }, 50);
 
-  // ✅ Forzar que no vuelva el teclado
+  // Hack para cerrar teclado en Android
   input.setAttribute("readonly", true);
 
   setTimeout(() => {
     input.removeAttribute("readonly");
-  }, 100);
-} 
-  window.addEventListener("popstate", () => {
-  limpiarBuscador();
+  }, 150);
+}
+
+// 🔙 Detectar botón atrás
+window.addEventListener("popstate", () => {
+  if (busquedaActiva) {
+    limpiarBuscador();
+    busquedaActiva = false;
+  }
 });
 </script>
 
